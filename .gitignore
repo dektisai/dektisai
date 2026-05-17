@@ -1,0 +1,12 @@
+node_modules/
+.vercel/
+.DS_Store
+Thumbs.db
+screenshot*.png
+*.log
+
+# Unused source/intermediate assets (kept locally as backup)
+assets/team-*-faded.png
+assets/team-joao.jpg
+assets/team-nuno.jpg
+assets/team-nicolau.jpg
