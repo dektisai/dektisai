@@ -14,7 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -153,56 +152,42 @@ tailwind.config = {
 
   ::selection { background: #F4ECD8; color: #060F1C; }
 
-  /* ===== Hero Spline 3D stage ===== */
+  /* ===== Hero Orb video + spotlight interactivo ===== */
   .orb-wrap {
-    position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 640px; margin-left: auto;
-    border-radius: 28px; overflow: hidden;
-    background: radial-gradient(circle at 50% 50%, #0A1628 0%, #060F1C 65%, #04090F 100%);
+    position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 620px; margin-left: auto;
   }
   .orb-wrap::before {
     content: ''; position: absolute; inset: -10%; pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, rgba(55,138,221,0.25), transparent 60%);
-    filter: blur(50px); z-index: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(55,138,221,0.35), transparent 55%);
+    filter: blur(40px); z-index: 0;
   }
-  spline-viewer {
-    position: absolute; inset: 0;
-    width: 100% !important; height: 100% !important;
+  .orb-video {
+    position: relative; width: 100%; height: 100%; object-fit: cover;
+    border-radius: 50%;
+    mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
     z-index: 1;
-    /* esconder o watermark "Built with Spline" */
+    user-select: none; -webkit-user-drag: none; pointer-events: none;
   }
-  spline-viewer::part(logo) { display: none !important; }
-  .spline-mask {
-    /* Tapa o watermark do Spline no canto inferior direito */
-    position: absolute; bottom: 0; right: 0;
-    width: 150px; height: 50px; z-index: 4;
-    background: linear-gradient(135deg, transparent 0%, transparent 30%, #060F1C 60%);
-    pointer-events: none;
+  .orb-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid rgba(133,183,235,0.15);
+    z-index: 2; pointer-events: none;
   }
-  .spline-fallback {
-    position: absolute; inset: 0; z-index: 0;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
-  }
-  .spline-fallback::before {
-    content: ''; width: 60%; height: 60%; border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #378ADD, #185FA5 50%, #04090F 90%);
-    filter: blur(10px); opacity: 0.6;
-    animation: pulse-orb 4s ease-in-out infinite;
-  }
-  @keyframes pulse-orb {
-    0%,100% { transform: scale(1); opacity: 0.6; }
-    50%     { transform: scale(1.05); opacity: 0.8; }
-  }
+  .orb-ring.r2 { inset: 6%; border-color: rgba(133,183,235,0.10); animation: spin 90s linear infinite; }
+  .orb-ring.r3 { inset: 14%; border-color: rgba(244,236,216,0.08); animation: spin 140s linear infinite reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Cursor spotlight sobre o stage do Spline */
+  /* Spotlight cream que segue o cursor */
   .hero-spotlight {
-    position: absolute; width: 380px; height: 380px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(244,236,216,0.18), transparent 70%);
-    filter: blur(20px); pointer-events: none;
+    position: absolute; width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(244,236,216,0.25), rgba(133,183,235,0.10) 45%, transparent 70%);
+    filter: blur(24px); pointer-events: none;
     transform: translate3d(-50%, -50%, 0);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
     opacity: 0; z-index: 3;
-    will-change: transform, left, top;
+    mix-blend-mode: screen;
+    will-change: left, top, opacity;
   }
 
   .orb-chip {
@@ -370,11 +355,12 @@ tailwind.config = {
   .book-frame {
     position: relative;
     background: #0A1628;
-    padding: 4px;
+    padding: 0;
   }
   .calendly-inline-widget {
-    border-radius: 14px;
+    border-radius: 0 0 22px 22px;
     overflow: hidden;
+    display: block;
   }
 
 </style>
@@ -384,13 +370,14 @@ tailwind.config = {
 <!-- ===================== NAVBAR ===================== -->
 <header class="fixed top-0 left-0 right-0 z-50 nav-blur">
   <div class="max-w-7xl mx-auto px-6 lg:px-10 h-24 flex items-center justify-between">
-    <a href="#top" class="flex items-center gap-3.5 logo-wrap">
+    <a href="#top" class="flex items-center gap-3 logo-wrap leading-none">
       <img src="assets/logo.png" alt="Dektis AI" class="logo-img h-14 w-14 object-contain drop-shadow-[0_0_18px_rgba(244,236,216,0.18)]"
+           style="transform: translateY(-3px);"
            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
       <span class="logo-fallback items-center gap-2.5" style="display:none;">
         <span class="w-12 h-12 rounded-full bg-cream flex items-center justify-center text-navy-bg font-bold text-lg">δ</span>
       </span>
-      <span class="text-white-text font-semibold tracking-tightest text-2xl md:text-[28px] hidden sm:inline">Dektis</span>
+      <span class="text-white-text font-semibold tracking-tightest text-2xl md:text-[28px] hidden sm:inline leading-none">Dektis</span>
     </a>
     <nav class="hidden md:flex items-center gap-8 text-sm text-white-text/80">
       <a href="#top" class="hover:text-cream transition">Home</a>
@@ -433,36 +420,33 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Coluna direita: Spline 3D interativo -->
+    <!-- Coluna direita: Orb (vídeo) com luz que segue cursor -->
     <div class="lg:col-span-5 fade-in">
       <div class="orb-wrap" id="orb-wrap">
-        <!-- fallback orb visível enquanto Spline carrega -->
-        <div class="spline-fallback"></div>
+        <span class="orb-ring"></span>
+        <span class="orb-ring r2"></span>
+        <span class="orb-ring r3"></span>
 
-        <!-- cena 3D interativa -->
-        <spline-viewer
-          id="spline-orb"
-          url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-          loading-anim-type="none"
-          events-target="global"></spline-viewer>
+        <video class="orb-video" id="orb-video"
+               src="assets/hero-orb.mp4"
+               autoplay muted loop playsinline preload="auto"
+               draggable="false" oncontextmenu="return false;"
+               poster=""></video>
 
-        <!-- spotlight que segue o cursor -->
+        <!-- spotlight cream que segue o cursor sobre o orb -->
         <div class="hero-spotlight" id="hero-spotlight"></div>
 
-        <!-- tapa watermark do Spline -->
-        <div class="spline-mask"></div>
-
         <!-- chips flutuantes — feed de atividade live -->
-        <div class="orb-chip" data-chip="0" style="top: 6%; left: -8%; animation-delay: 0s;">
+        <div class="orb-chip" data-chip="0" style="top: 4%; left: -8%; animation-delay: 0s;">
           <span class="dot"></span><span class="chip-text">Visitante no site</span>
         </div>
         <div class="orb-chip" data-chip="1" style="top: 28%; right: -12%; animation-delay: 1.2s;">
           <span class="dot"></span><span class="chip-text">Chamada recebida · 03:14</span>
         </div>
         <div class="orb-chip" data-chip="2" style="bottom: 30%; left: -10%; animation-delay: 2.4s;">
-          <span class="dot"></span><span class="chip-text">Dektis a responder</span>
+          <span class="dot"></span><span class="chip-text">IA a responder</span>
         </div>
-        <div class="orb-chip" data-chip="3" style="bottom: 6%; right: -4%; animation-delay: 3.6s;">
+        <div class="orb-chip" data-chip="3" style="bottom: 4%; right: -4%; animation-delay: 3.6s;">
           <span class="dot"></span><span class="chip-text">Marcação confirmada</span>
         </div>
       </div>
@@ -623,7 +607,8 @@ tailwind.config = {
     <div class="relative">
       <div class="text-center mb-8 fade-in">
         <div class="eyebrow">Etapa 02 · Receber</div>
-        <h3 class="text-white-text text-2xl md:text-3xl font-semibold mt-2">A Dektis atende — pelos dois canais</h3>
+        <h3 class="text-white-text text-2xl md:text-3xl font-semibold mt-2">A IA da Dektis atende — pelos dois canais</h3>
+        <p class="text-white-text/50 text-sm max-w-xl mx-auto mt-3">Não somos nós a atender em pessoa. São as ferramentas de IA que construímos para o teu negócio.</p>
       </div>
       <div class="grid md:grid-cols-2 gap-6">
 
@@ -710,8 +695,8 @@ tailwind.config = {
               <div class="w-14 h-14 rounded-full bg-cream/10 border border-cream/40 flex items-center justify-center">
                 <img src="assets/logo.png" alt="Dektis" class="w-9 h-9 object-contain">
               </div>
-              <div class="text-cream text-base font-semibold">Dektis</div>
-              <div class="text-cream/70 text-[11px]">intercepta · qualifica · encaminha</div>
+              <div class="text-cream text-base font-semibold">IA da Dektis</div>
+              <div class="text-cream/70 text-[11px]">atende · qualifica · encaminha</div>
             </div>
           </div>
 
@@ -729,8 +714,8 @@ tailwind.config = {
           </div>
         </div>
 
-        <p class="text-center text-white-text/45 text-xs mt-8 max-w-lg mx-auto">
-          A Dektis fica no meio — atende quando ninguém pode, qualifica quem vale a pena e entrega-te só o cliente pronto a marcar.
+        <p class="text-center text-white-text/45 text-xs mt-8 max-w-xl mx-auto">
+          A inteligência artificial que construímos fica no meio — atende quando ninguém pode, qualifica quem vale a pena e entrega-te só o cliente pronto a marcar. Tu recebes-o no fim do funil, sem ter de levantar o telemóvel.
         </p>
       </div>
     </div>
@@ -758,7 +743,7 @@ tailwind.config = {
         <div>
           <div class="flex items-center justify-between">
             <span class="num">01 / Website</span>
-            <span class="text-cream/60 text-xs uppercase tracking-widest">Standalone</span>
+            <span class="text-cream/60 text-xs uppercase tracking-widest">Serviço individual</span>
           </div>
           <h3 class="display text-white-text text-3xl mt-10">Website<br>profissional.</h3>
           <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
@@ -781,7 +766,7 @@ tailwind.config = {
         <div>
           <div class="flex items-center justify-between">
             <span class="num">02 / Voicebot</span>
-            <span class="text-cream/60 text-xs uppercase tracking-widest">Standalone</span>
+            <span class="text-cream/60 text-xs uppercase tracking-widest">Serviço individual</span>
           </div>
           <h3 class="display text-white-text text-3xl mt-10">Voicebot<br>24/7.</h3>
           <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
@@ -800,29 +785,31 @@ tailwind.config = {
       </article>
 
       <!-- BUNDLE: Website + Voicebot (destacado) -->
-      <article class="sector lift fade-in relative" style="background:#122431;">
-        <span class="absolute -top-3 right-6 px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase"
+      <div class="relative fade-in pt-3">
+        <span class="absolute top-0 right-6 z-20 px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase shadow-lg"
               style="background:#F4ECD8; color:#060F1C;">Recomendado</span>
-        <div>
-          <div class="flex items-center justify-between">
-            <span class="num text-cream">03 / Bundle</span>
-            <span class="text-cream/80 text-xs uppercase tracking-widest">Website + Voicebot</span>
+        <article class="sector lift h-full" style="background:#122431;">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="num text-cream">03 / Bundle</span>
+              <span class="text-cream/80 text-xs uppercase tracking-widest">Website + Voicebot</span>
+            </div>
+            <h3 class="display text-white-text text-3xl mt-10">Os dois<br>canais.</h3>
+            <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
+              Captação web e atendimento por voz, ligados na mesma agenda. O sistema completo de receção.
+            </p>
           </div>
-          <h3 class="display text-white-text text-3xl mt-10">Os dois<br>canais.</h3>
-          <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
-            Captação web e atendimento por voz, ligados na mesma agenda. O sistema completo de receção.
-          </p>
-        </div>
-        <ul class="text-sm text-white-text/70 space-y-2 mt-8">
-          <li>· Tudo no Website</li>
-          <li>· Tudo no Voicebot</li>
-          <li>· Agenda única partilhada entre canais</li>
-          <li>· Relatório mensal de marcações</li>
-        </ul>
-        <a href="#contacto" class="text-cream/80 text-sm mt-8 inline-flex items-center gap-2 hover:text-cream transition">
-          Pedir proposta <span class="arrow">→</span>
-        </a>
-      </article>
+          <ul class="text-sm text-white-text/70 space-y-2 mt-8">
+            <li>· Tudo no Website</li>
+            <li>· Tudo no Voicebot</li>
+            <li>· Agenda única partilhada entre canais</li>
+            <li>· Relatório mensal de marcações</li>
+          </ul>
+          <a href="#contacto" class="text-cream/80 text-sm mt-8 inline-flex items-center gap-2 hover:text-cream transition">
+            Pedir proposta <span class="arrow">→</span>
+          </a>
+        </article>
+      </div>
 
     </div>
 
@@ -840,14 +827,14 @@ tailwind.config = {
             </div>
             <h3 class="display text-white-text text-2xl md:text-3xl mb-3">Manutenção contínua.</h3>
             <p class="text-white-text/65 text-sm leading-relaxed max-w-2xl">
-              Liga a qualquer um dos serviços acima. Cuidamos do dia-a-dia para que o sistema não pare de gerar marcações.
+              Liga a qualquer um dos serviços acima. Se algo correr mal com o teu website ou voicebot — uma falha, uma mensagem fora do tom, uma integração que para — resolvemos de forma rápida e eficiente. Sem ter de abrir tickets, sem esperar dias.
             </p>
             <ul class="grid sm:grid-cols-3 gap-3 mt-6 text-sm text-white-text/75">
               <li class="flex items-start gap-2">
                 <span class="text-cream mt-0.5">·</span> Relatório semanal de performance
               </li>
               <li class="flex items-start gap-2">
-                <span class="text-cream mt-0.5">·</span> Suporte prioritário (resposta &lt; 4h)
+                <span class="text-cream mt-0.5">·</span> Correção rápida de qualquer falha
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-cream mt-0.5">·</span> Otimização contínua do funil
@@ -1003,7 +990,7 @@ tailwind.config = {
         <h2 class="display text-white-text text-4xl md:text-6xl">Para negócios<br>que querem<br><span class="text-blue-light italic font-light">crescer com método.</span></h2>
       </div>
       <p class="text-white-text/65 text-lg leading-relaxed self-end fade-in">
-        Trabalhamos com qualquer negócio que dependa de presença, agenda e atendimento — e que precise de transformar a sua receção numa máquina de conversão. Não é o setor que define, é a necessidade.
+        Não somos uma agência de marketing. Não somos uma software house. Somos a equipa pequena e directa que opera a tua receção por ti — instala, mantém e afina, sem precisares de aprender ferramentas novas ou contratar mais alguém. Trabalhamos lado-a-lado com o dono do negócio, em Português, com decisões em horas e não em semanas.
       </p>
     </div>
 
@@ -1150,7 +1137,7 @@ tailwind.config = {
         <div class="book-frame">
           <div class="calendly-inline-widget"
                data-url="https://calendly.com/contact-dektis/30min?hide_event_type_details=1&hide_gdpr_banner=1&hide_landing_page_details=1&background_color=0a1628&text_color=e6f1fb&primary_color=f4ecd8"
-               style="min-width:320px; height:720px;"></div>
+               style="min-width:320px; height:630px;"></div>
           <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
           <noscript>
             <div class="p-6">
@@ -1235,53 +1222,53 @@ tailwind.config = {
 </section>
 
 <!-- ===================== FOOTER ===================== -->
-<footer class="relative px-6 lg:px-10 pt-20 pb-10 border-t border-white-text/10 overflow-hidden">
-  <!-- background grandee com wordmark -->
+<footer class="relative px-6 lg:px-10 pt-24 pb-10 border-t border-white-text/10 overflow-hidden">
+  <!-- glow ambiente -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <div class="absolute -bottom-20 -right-10 text-[200px] md:text-[320px] font-bold tracking-tightest leading-none select-none"
-         style="background: linear-gradient(180deg, rgba(244,236,216,0.05), transparent); -webkit-background-clip: text; background-clip: text; color: transparent;">
-      Dektis
-    </div>
     <div class="absolute -top-40 left-1/3 w-[600px] h-[600px] rounded-full"
          style="background: radial-gradient(circle, rgba(55,138,221,0.10), transparent 70%); filter: blur(60px);"></div>
+    <div class="absolute -bottom-40 right-1/4 w-[500px] h-[500px] rounded-full"
+         style="background: radial-gradient(circle, rgba(244,236,216,0.06), transparent 70%); filter: blur(50px);"></div>
   </div>
 
   <div class="relative max-w-7xl mx-auto">
-    <!-- Top block: brand + CTA -->
-    <div class="grid md:grid-cols-[1.5fr_1fr] gap-12 items-start mb-16">
-      <div>
-        <div class="flex items-center gap-4 mb-6">
-          <img src="assets/logo.png" alt="Dektis" class="h-16 w-16 md:h-20 md:w-20 object-contain drop-shadow-[0_0_24px_rgba(244,236,216,0.25)]">
-          <div>
-            <div class="text-white-text font-semibold tracking-tightest text-3xl md:text-4xl leading-none">Dektis</div>
-            <div class="text-blue-light/70 text-xs mt-1 tracking-widest uppercase">δέκτης · o recetor</div>
-          </div>
-        </div>
-        <p class="display text-white-text/85 text-2xl md:text-3xl leading-tight max-w-xl">
-          A receção digital<br><span class="text-blue-light italic font-light">do teu negócio.</span>
-        </p>
-      </div>
-
-      <div class="md:text-right">
-        <div class="text-cream/80 text-xs uppercase tracking-widest mb-4">Falar com a Dektis</div>
-        <a href="mailto:contact@dektis.eu" class="inline-flex items-center gap-3 text-white-text text-xl md:text-2xl font-medium hover:text-cream transition group">
-          contact@dektis.eu
-          <span class="inline-block transition group-hover:translate-x-1">→</span>
-        </a>
-        <div class="mt-5 flex md:justify-end items-center gap-2 text-xs text-white-text/50">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-on animate-pulse"></span>
-          <span>Resposta em &lt; 24h</span>
-        </div>
-        <div class="mt-8 flex md:justify-end gap-2">
-          <a href="#contacto" class="btn btn-primary !py-3 !px-5 text-[13px]">
-            Agendar diagnóstico
-            <span class="arrow">→</span>
-          </a>
+    <!-- Brand block -->
+    <div class="text-center md:text-left mb-16 fade-in">
+      <div class="flex flex-col md:flex-row items-center md:items-end gap-5 md:gap-6">
+        <img src="assets/logo.png" alt="Dektis" class="h-20 w-20 md:h-28 md:w-28 object-contain drop-shadow-[0_0_30px_rgba(244,236,216,0.28)]">
+        <div>
+          <div class="text-white-text font-semibold tracking-tightest text-5xl md:text-6xl leading-none">Dektis</div>
+          <div class="text-blue-light/70 text-xs mt-3 tracking-[0.3em] uppercase">δέκτης · o recetor</div>
         </div>
       </div>
     </div>
 
-    <!-- Middle: pills com os pilares -->
+    <!-- Contact block — espaço expandido -->
+    <div class="grid md:grid-cols-[2fr_1fr] gap-12 items-center py-12 border-y border-white-text/10 mb-12">
+      <div>
+        <div class="text-cream/80 text-xs uppercase tracking-widest mb-4">Falar com a Dektis</div>
+        <a href="mailto:contact@dektis.eu" class="inline-flex items-center gap-3 text-white-text text-2xl md:text-4xl font-medium hover:text-cream transition group">
+          <span class="display tracking-tight">contact@dektis.eu</span>
+          <span class="inline-block transition group-hover:translate-x-1">→</span>
+        </a>
+        <div class="mt-5 flex items-center gap-3 text-sm text-white-text/55">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-on animate-pulse"></span>
+          <span>Resposta em &lt; 24h · em Português</span>
+        </div>
+      </div>
+
+      <div class="md:text-right">
+        <a href="#contacto" class="btn btn-primary inline-flex">
+          Agendar diagnóstico
+          <span class="arrow">→</span>
+        </a>
+        <p class="text-white-text/40 text-xs mt-4 max-w-xs md:ml-auto">
+          30 minutos · sem compromisso · proposta concreta no fim
+        </p>
+      </div>
+    </div>
+
+    <!-- Pills com pilares -->
     <div class="flex flex-wrap gap-2 mb-14">
       <span class="px-4 py-2 rounded-full border border-white-text/10 bg-white-text/5 text-white-text/70 text-xs">Receção 24/7</span>
       <span class="px-4 py-2 rounded-full border border-white-text/10 bg-white-text/5 text-white-text/70 text-xs">SEO local</span>
