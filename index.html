@@ -124,9 +124,39 @@ tailwind.config = {
   }
   .step:last-child { border-bottom: 1px solid rgba(230,241,251,0.1); }
 
-  /* Fade-in */
-  .fade-in { opacity: 0; transform: translateY(32px); transition: opacity 0.9s ease, transform 0.9s ease; }
-  .fade-in.show { opacity: 1; transform: translateY(0); }
+  /* Fade-in com reveal rico (translate + scale + blur) */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(40px) scale(0.985);
+    filter: blur(6px);
+    transition:
+      opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform, filter;
+  }
+  .fade-in.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  /* Scroll progress bar no topo */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 100;
+    background: linear-gradient(90deg, #185FA5 0%, #378ADD 40%, #F4ECD8 100%);
+    transform-origin: left center;
+    transform: scaleX(0);
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(244,236,216,0.4);
+  }
+
+  /* Parallax sutil — elementos sobem mais devagar que o scroll */
+  [data-parallax] {
+    will-change: transform;
+    transition: transform 0.1s linear;
+  }
 
   /* Marquee / scroll text */
   @keyframes drift {
@@ -262,6 +292,20 @@ tailwind.config = {
   .typing span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
 
+  /* Chat-log da demo com altura fixa para não saltitar */
+  .chat-log-container {
+    min-height: 420px;
+    max-height: 420px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chat-log-container::before {
+    /* fade no topo quando há muitas mensagens */
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40px;
+    background: linear-gradient(180deg, rgba(10,22,40,0.6), transparent);
+    pointer-events: none; z-index: 1;
+  }
+
   /* Waveform da chamada */
   .wave-bar {
     display: inline-block; width: 3px; flex: 1;
@@ -366,6 +410,9 @@ tailwind.config = {
 </style>
 </head>
 <body>
+
+<!-- Scroll progress bar -->
+<div class="scroll-progress" id="scroll-progress"></div>
 
 <!-- ===================== NAVBAR ===================== -->
 <header class="fixed top-0 left-0 right-0 z-50 nav-blur">
@@ -574,7 +621,7 @@ tailwind.config = {
       <span class="eyebrow">Como funciona</span>
     </div>
     <h2 class="display text-white-text text-4xl md:text-6xl max-w-3xl mb-6 fade-in">
-      Do primeiro toque<br>à <span class="text-blue-light italic font-light">marcação confirmada.</span>
+      Do primeiro contacto<br>à <span class="text-blue-light italic font-light">marcação confirmada.</span>
     </h2>
     <p class="text-white-text/55 max-w-2xl mb-20 fade-in leading-relaxed">
       Atraímos o cliente, recebemo-lo por dois canais — <span class="text-cream">website</span> e <span class="text-cream">voicebot</span> — e convertemos em marcação na tua agenda.
@@ -785,31 +832,29 @@ tailwind.config = {
       </article>
 
       <!-- BUNDLE: Website + Voicebot (destacado) -->
-      <div class="relative fade-in pt-3">
-        <span class="absolute top-0 right-6 z-20 px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase shadow-lg"
+      <article class="sector lift fade-in relative" style="background:#122431;">
+        <span class="absolute top-5 right-5 z-10 px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase shadow-lg"
               style="background:#F4ECD8; color:#060F1C;">Recomendado</span>
-        <article class="sector lift h-full" style="background:#122431;">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="num text-cream">03 / Bundle</span>
-              <span class="text-cream/80 text-xs uppercase tracking-widest">Website + Voicebot</span>
-            </div>
-            <h3 class="display text-white-text text-3xl mt-10">Os dois<br>canais.</h3>
-            <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
-              Captação web e atendimento por voz, ligados na mesma agenda. O sistema completo de receção.
-            </p>
+        <div>
+          <div class="flex items-center justify-between pr-28">
+            <span class="num text-cream">03 / Bundle</span>
+            <span class="text-cream/80 text-xs uppercase tracking-widest hidden xl:inline">Website + Voicebot</span>
           </div>
-          <ul class="text-sm text-white-text/70 space-y-2 mt-8">
-            <li>· Tudo no Website</li>
-            <li>· Tudo no Voicebot</li>
-            <li>· Agenda única partilhada entre canais</li>
-            <li>· Relatório mensal de marcações</li>
-          </ul>
-          <a href="#contacto" class="text-cream/80 text-sm mt-8 inline-flex items-center gap-2 hover:text-cream transition">
-            Pedir proposta <span class="arrow">→</span>
-          </a>
-        </article>
-      </div>
+          <h3 class="display text-white-text text-3xl mt-10">Os dois<br>canais.</h3>
+          <p class="text-white-text/60 text-sm mt-5 leading-relaxed">
+            Captação web e atendimento por voz, ligados na mesma agenda. O sistema completo de receção.
+          </p>
+        </div>
+        <ul class="text-sm text-white-text/70 space-y-2 mt-8">
+          <li>· Tudo no Website</li>
+          <li>· Tudo no Voicebot</li>
+          <li>· Agenda única partilhada entre canais</li>
+          <li>· Relatório mensal de marcações</li>
+        </ul>
+        <a href="#contacto" class="text-cream/80 text-sm mt-8 inline-flex items-center gap-2 hover:text-cream transition">
+          Pedir proposta <span class="arrow">→</span>
+        </a>
+      </article>
 
     </div>
 
@@ -827,14 +872,14 @@ tailwind.config = {
             </div>
             <h3 class="display text-white-text text-2xl md:text-3xl mb-3">Manutenção contínua.</h3>
             <p class="text-white-text/65 text-sm leading-relaxed max-w-2xl">
-              Liga a qualquer um dos serviços acima. Se algo correr mal com o teu website ou voicebot — uma falha, uma mensagem fora do tom, uma integração que para — resolvemos de forma rápida e eficiente. Sem ter de abrir tickets, sem esperar dias.
+              Liga a qualquer um dos serviços acima. Cuidamos do website e do voicebot todos os dias para que o sistema não pare de gerar marcações — qualquer ajuste necessário entra direto no nosso pipeline, sem tickets, sem espera.
             </p>
             <ul class="grid sm:grid-cols-3 gap-3 mt-6 text-sm text-white-text/75">
               <li class="flex items-start gap-2">
                 <span class="text-cream mt-0.5">·</span> Relatório semanal de performance
               </li>
               <li class="flex items-start gap-2">
-                <span class="text-cream mt-0.5">·</span> Correção rápida de qualquer falha
+                <span class="text-cream mt-0.5">·</span> Resposta em <span class="text-cream font-semibold">&lt; 4h</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-cream mt-0.5">·</span> Otimização contínua do funil
@@ -945,7 +990,7 @@ tailwind.config = {
           </div>
         </div>
 
-        <div class="flex flex-col gap-3" id="chat-log">
+        <div class="flex flex-col justify-end gap-3 chat-log-container" id="chat-log">
           <!-- bolhas injectadas via JS -->
         </div>
 
@@ -990,7 +1035,7 @@ tailwind.config = {
         <h2 class="display text-white-text text-4xl md:text-6xl">Para negócios<br>que querem<br><span class="text-blue-light italic font-light">crescer com método.</span></h2>
       </div>
       <p class="text-white-text/65 text-lg leading-relaxed self-end fade-in">
-        Não somos uma agência de marketing. Não somos uma software house. Somos a equipa pequena e directa que opera a tua receção por ti — instala, mantém e afina, sem precisares de aprender ferramentas novas ou contratar mais alguém. Trabalhamos lado-a-lado com o dono do negócio, em Português, com decisões em horas e não em semanas.
+        Operamos a tua receção do primeiro contacto à marcação confirmada — em Português, com decisões em horas. Não te vendemos ferramentas para aprenderes; entregamos o resultado pronto a funcionar.
       </p>
     </div>
 
@@ -1308,16 +1353,64 @@ tailwind.config = {
 </script>
 
 <script>
-  // Fade-in observer
+  // ===== Scroll progress bar =====
+  const progressBar = document.getElementById('scroll-progress');
+  let progressTicking = false;
+  function updateProgress() {
+    const scrollTop = window.scrollY || window.pageYOffset;
+    const docHeight = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+    const pct = Math.min(1, Math.max(0, scrollTop / docHeight));
+    if (progressBar) progressBar.style.transform = `scaleX(${pct})`;
+    progressTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!progressTicking) {
+      requestAnimationFrame(updateProgress);
+      progressTicking = true;
+    }
+  }, { passive: true });
+  updateProgress();
+
+  // ===== Fade-in observer com stagger automático =====
   const fadeObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
+        // Stagger: se há vários .fade-in irmãos no mesmo pai, escalonam a entrada
+        const parent = e.target.parentElement;
+        const siblings = parent ? Array.from(parent.children).filter(c => c.classList.contains('fade-in')) : [];
+        const idx = siblings.indexOf(e.target);
+        const delay = idx > 0 ? Math.min(idx * 90, 540) : 0;
+        e.target.style.transitionDelay = `${delay}ms`;
         e.target.classList.add('show');
         fadeObs.unobserve(e.target);
       }
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
+
+  // ===== Parallax sutil em [data-parallax] =====
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  let parallaxTicking = false;
+  function updateParallax() {
+    const scrollY = window.scrollY;
+    parallaxEls.forEach(el => {
+      const speed = parseFloat(el.dataset.parallax) || 0.15;
+      const rect = el.getBoundingClientRect();
+      const elTop = rect.top + scrollY;
+      const offset = (scrollY - elTop + window.innerHeight) * speed;
+      el.style.transform = `translate3d(0, ${offset * -0.15}px, 0)`;
+    });
+    parallaxTicking = false;
+  }
+  if (parallaxEls.length) {
+    window.addEventListener('scroll', () => {
+      if (!parallaxTicking) {
+        requestAnimationFrame(updateParallax);
+        parallaxTicking = true;
+      }
+    }, { passive: true });
+    updateParallax();
+  }
 
   // Counter animation
   const countObs = new IntersectionObserver(entries => {
