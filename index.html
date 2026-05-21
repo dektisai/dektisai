@@ -116,7 +116,9 @@ tailwind.config = {
     content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse at top right, rgba(55,138,221,0.15), transparent 60%);
     opacity: 0; transition: opacity 0.5s ease;
+    pointer-events: none;
   }
+  .sector > * { position: relative; z-index: 1; }
   .sector:hover::before { opacity: 1; }
   .sector:hover { border-color: rgba(244,236,216,0.25); }
   .sector .num {
